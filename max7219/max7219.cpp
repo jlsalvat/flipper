@@ -40,7 +40,7 @@ Max7219::Max7219(SPI *spi_bus, PinName cs): _p_spi(spi_bus)
 {
     _num_devices = 1;
     
-    _p_cs = new DigitalOut(cs, 0); //change for salvat board
+    _p_cs = new DigitalOut(cs, 1);
     _spi_owner = false;
 }
 
@@ -51,7 +51,7 @@ Max7219::Max7219(PinName mosi, PinName miso, PinName sclk, PinName cs)
     _num_devices = 1;
     
     _p_spi = new SPI(mosi, miso, sclk);
-    _p_cs = new DigitalOut(cs, 0);//change for salvat board
+    _p_cs = new DigitalOut(cs, 1);
     
     _spi_owner = true;
 }
@@ -89,13 +89,13 @@ void Max7219::set_display_test(void)
 {
     uint8_t idx = 0;
     
-    _p_cs->write(1); //change for salvat board
+    _p_cs->write(0); 
     for(idx = 0; idx < _num_devices; idx++)
     {
         _p_spi->write(MAX7219_DISPLAY_TEST);
         _p_spi->write(1);
     }
-    _p_cs->write(0); //change for salvat board
+    _p_cs->write(1); 
 }
 
 
@@ -104,13 +104,13 @@ void Max7219::clear_display_test(void)
 {
     uint8_t idx = 0;
     
-    _p_cs->write(1); //change for salvat board
+    _p_cs->write(0); 
     for(idx = 0; idx < _num_devices; idx++)
     {
         _p_spi->write(MAX7219_DISPLAY_TEST);
         _p_spi->write(0);
     }
-    _p_cs->write(0); //change for salvat board
+    _p_cs->write(1); 
 }
 
 
@@ -132,7 +132,7 @@ int32_t Max7219::init_device(max7219_configuration_t config)
     else
     {
         //write DECODE_MODE register of device
-        _p_cs->write(1); //change for salvat board
+        _p_cs->write(0); 
         for(idx = _num_devices; idx > 0; idx--)
         {
             if(config.device_number == idx)
@@ -146,12 +146,12 @@ int32_t Max7219::init_device(max7219_configuration_t config)
                 _p_spi->write(0);
             }
         }
-        _p_cs->write(0); //change for salvat board 
+        _p_cs->write(1); 
         
         wait_us(1);
         
         //write INTENSITY register of device
-        _p_cs->write(1); //change for salvat board
+        _p_cs->write(0); 
         for(idx = _num_devices; idx > 0; idx--)
         {
             if(config.device_number == idx)
@@ -165,12 +165,12 @@ int32_t Max7219::init_device(max7219_configuration_t config)
                 _p_spi->write(0);
             }
         }
-        _p_cs->write(0); //change for salvat board
+        _p_cs->write(1); 
         
         wait_us(1);
         
         //write SCAN_LIMT register of device
-        _p_cs->write(1); //change for salvat board 
+        _p_cs->write(0); 
         for(idx = _num_devices; idx > 0; idx--)
         {
             if(config.device_number == idx)
@@ -184,7 +184,7 @@ int32_t Max7219::init_device(max7219_configuration_t config)
                 _p_spi->write(0);
             }
         }
-        _p_cs->write(0); //change for salvat board
+        _p_cs->write(1); 
         
         wait_us(1);
         
@@ -201,35 +201,35 @@ void Max7219::init_display(max7219_configuration_t config)
     uint8_t idx = 0;
     
     //write DECODE_MODE register of all devices
-    _p_cs->write(1); //change for salvat board 
+    _p_cs->write(0); 
     for(idx = 0; idx < _num_devices; idx++)
     {
         _p_spi->write(MAX7219_DECODE_MODE);
         _p_spi->write(config.decode_mode);
     }
-    _p_cs->write(0); //change for salvat board
+    _p_cs->write(1); 
     
     wait_us(1);
     
     //write INTENSITY register of all devices
-    _p_cs->write(1); //change for salvat board 
+    _p_cs->write(0); 
     for(idx = 0; idx < _num_devices; idx++)
     {
         _p_spi->write(MAX7219_INTENSITY);
         _p_spi->write(config.intensity);
     }
-    _p_cs->write(0); //change for salvat board
+    _p_cs->write(1); 
     
     wait_us(1);
     
     //write SCAN_LIMT register of all devices
-    _p_cs->write(1); //change for salvat board
+    _p_cs->write(0); 
     for(idx = 0; idx < _num_devices; idx++)
     {
         _p_spi->write(MAX7219_SCAN_LIMIT);
         _p_spi->write(config.scan_limit);
     }
-    _p_cs->write(0); //change for salvat board 
+    _p_cs->write(1); 
     
     wait_us(1);
 }
@@ -252,7 +252,7 @@ int32_t Max7219::enable_device(uint8_t device_number)
     }
     else
     {
-        _p_cs->write(1); //change for salvat board 
+        _p_cs->write(0); 
         for(idx = _num_devices; idx > 0; idx--)
         {
             if(device_number == idx)
@@ -266,7 +266,7 @@ int32_t Max7219::enable_device(uint8_t device_number)
                 _p_spi->write(0);
             }
         }
-        _p_cs->write(0); //change for salvat board
+        _p_cs->write(1); 
         
         rtn_val = 0;
     }
@@ -280,13 +280,13 @@ void Max7219::enable_display(void)
 {
     uint8_t idx = 0;
     
-    _p_cs->write(1); //change for salvat board 
+    _p_cs->write(0); 
     for(idx = 0; idx < _num_devices; idx++)
     {
         _p_spi->write(MAX7219_SHUTDOWN);
         _p_spi->write(1);
     }
-    _p_cs->write(0); //change for salvat board 
+    _p_cs->write(1); 
 }
     
 
@@ -307,7 +307,7 @@ int32_t Max7219::disable_device(uint8_t device_number)
     }
     else
     {
-        _p_cs->write(1); //change for salvat board 
+        _p_cs->write(0); 
         for(idx = _num_devices; idx > 0; idx--)
         {
             if(device_number == idx)
@@ -321,7 +321,7 @@ int32_t Max7219::disable_device(uint8_t device_number)
                 _p_spi->write(0);
             }
         }
-        _p_cs->write(0); //change for salvat board
+        _p_cs->write(1); 
         
         rtn_val = 0;
     }
@@ -335,13 +335,13 @@ void Max7219::disable_display(void)
 {
     uint8_t idx = 0;
     
-    _p_cs->write(1); //change for salvat board
+    _p_cs->write(0); 
     for(idx = 0; idx < _num_devices; idx++)
     {
         _p_spi->write(MAX7219_SHUTDOWN);
         _p_spi->write(0);
     }
-    _p_cs->write(0); //change for salvat board
+    _p_cs->write(1); 
 }
 
 
@@ -372,7 +372,7 @@ int32_t Max7219::write_digit(uint8_t device_number, uint8_t digit, uint8_t data)
         }
         else
         {
-            _p_cs->write(1); //change for salvat board
+            _p_cs->write(0); 
             for(idx = _num_devices; idx > 0; idx--)
             {
                 if(idx == device_number)
@@ -386,7 +386,7 @@ int32_t Max7219::write_digit(uint8_t device_number, uint8_t digit, uint8_t data)
                     _p_spi->write(0);
                 }
             }
-            _p_cs->write(0); //change for salvat board
+            _p_cs->write(1); 
             
             rtn_val = 0;
         }
@@ -422,7 +422,7 @@ int32_t Max7219::clear_digit(uint8_t device_number, uint8_t digit)
         }
         else
         {
-            _p_cs->write(1); //change for salvat board
+            _p_cs->write(0); 
             for(idx = _num_devices; idx > 0; idx--)
             {
                 if(idx == device_number)
@@ -436,7 +436,7 @@ int32_t Max7219::clear_digit(uint8_t device_number, uint8_t digit)
                     _p_spi->write(0);
                 }
             }
-            _p_cs->write(0); //change for salvat board
+            _p_cs->write(1); 
             
             rtn_val = 0;
         }
