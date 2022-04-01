@@ -7,7 +7,3 @@ mbed-os
 Modbus.lib
 max7219.lib
 Grove_LCD_RGB_Backlight.lib
-seeed_rgb_led_matrix
-max7219
-Modbus
-Grove_LCD_RGB_Backlight
