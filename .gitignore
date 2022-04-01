@@ -4,5 +4,6 @@ compile_commands.json
 .clangd
 .cache
 mbed-os
-grove_lcd_rgb_backlight
-Grove_LCD_RGB_Backlight
+Modbus.lib
+max7219.lib
+Grove_LCD_RGB_Backlight.lib
