@@ -4,10 +4,6 @@ compile_commands.json
 .clangd
 .cache
 mbed-os
-max7219
-grove_lcd_rgb_backlight_mbed
-seeed_rgb_led_matrix
-ModbusSlaveRTU
-MessageQueue
-Modbus
-SerialStream
+
+
+
