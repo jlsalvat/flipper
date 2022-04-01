@@ -18,6 +18,7 @@
  *
  * File: $Id: user_mb_app.c,v 1.60 2013/11/23 11:49:05 Armink $
  */
+ #include "mbed.h"
 #include "mb_app.h"
 
 

@@ -12,7 +12,7 @@
 #include "mb_app.h"
 #include "mbproto.h"
 
-#define WAIT_TIME_MS 500
+#define WAIT_TIME_MS 2000
 const int NB_IN = 20;
 
 // modbus
@@ -55,8 +55,6 @@ DigitalOut cmd_24V(PTC3);
 DigitalOut eject(PTC0);
 DigitalOut up(PTC7);
 BufferedSerial grove_serial(PTE22, PTE23);
-BufferedSerial modbus(D14, D15);
-
 I2C grove_I2C(PTC2, PTC1);
 GroveTwoRGBLedMatrixClass grove_I2C_matrix8_8(PTC2, PTC1);
 SPI max7219(D11, D12, D13);
@@ -73,8 +71,9 @@ const int colorB = 0;
 
 void ISR_poll_modbus(){
          //launch modbus poll
-      if(eStatus!=MB_ENOERR){
-        eStatus=eMBPoll( );        
+      if(eStatus==MB_ENOERR){
+        xMBPortSerialPolling();
+        eStatus=eMBPoll( );    
       }
 }
 
@@ -88,17 +87,16 @@ int main() {
 // on lance l'init Modbus en mode RTU, adresse slave 1, 115200 baud, parité paire
  printf("modbus slave ID-%d(0x%x) for the device.\r\n", SLAVE_ID, SLAVE_ID ); 
     /* Enable the Modbus Protocol Stack. */
-    if ( (eStatus = eMBInit( MB_RTU, SLAVE_ID, 0, 115200, MB_PAR_NONE )) !=  MB_ENOERR ){
+    if ( (eStatus = eMBInit( MB_RTU, SLAVE_ID, 0, 600, MB_PAR_NONE )) !=  MB_ENOERR ){
         eMBClose();  
         printf("ERROR modbus : eMBClose()\n\r")  ; 
     }
     else if ( (eStatus = eMBEnable(  ) ) != MB_ENOERR ){
-        printf("ERROR modbus : eMBEnable()\n\r")  ; 
+        printf("ERROR modbus : eMBEnable() eStatus=%d\n\r",eStatus)  ; 
     }
-    if(eStatus!=MB_ENOERR){
-        xMBPortSerialPolling();
+    else{
         printf("MODBUS OK : polling...\n\r")  ; 
-        tick_modbus.attach(ISR_poll_modbus,50ms);
+        tick_modbus.attach(ISR_poll_modbus,5ms);
     }
  
   max_7219.init_device(cfg);
@@ -125,7 +123,7 @@ int main() {
   while (true) {
     for (int i = 0; i < NB_IN; i++) {
       tab_in[i] = tab_uc_in[i].read();
-      printf("%d ", tab_in[i]);
+     // printf("%d ", tab_in[i]);
     }
     printf("\n\r");
     for (int i = 0; i < 4; i++) {
@@ -142,26 +140,27 @@ int main() {
     grove_serial.write(buf, sizeof(buf));
 
     led1 = !led1;
-    max_7219.set_display_test();
-    thread_sleep_for(WAIT_TIME_MS);
-    max_7219.clear_display_test();
+    if(slave.ucSCoilBuf[0]==1)
+        max_7219.set_display_test();
+    else
+        max_7219.clear_display_test();
     thread_sleep_for(WAIT_TIME_MS);
 // print modbus
     printf("eStatus=%d \n\r",eStatus);
-    printf("DISCRETE IN func:%d add:%d|",MB_FUNC_READ_INPUT_REGISTER,S_DISCRETE_INPUT_START);
-    for(int i=0;i<S_DISCRETE_INPUT_NDISCRETES;i++)
-        printf("%d",slave.ucSDiscInBuf[i]);
-    printf(" COIL IN: func:%d add:%d|",MB_FUNC_READ_COILS,S_COIL_START);
-    for(int i=0;i<S_COIL_NCOILS;i++)
-        printf("%d",slave.ucSCoilBuf[i]);
+    printf("DISCRETE:%d add reg:%d|",MB_FUNC_READ_DISCRETE_INPUTS,S_DISCRETE_INPUT_START);
+    for(int i=0;i<S_DISCRETE_INPUT_NDISCRETES/8;i++)
+        printf("%2x ",slave.ucSDiscInBuf[i]);
+    printf(" COIL:%d add reg:%d|",MB_FUNC_READ_COILS,S_COIL_START);
+    for(int i=0;i<S_COIL_NCOILS/8;i++)
+        printf("%2x ",slave.ucSCoilBuf[i]);
     printf("\n\r");
-    printf("REG IN: func:%d add:%d",MB_FUNC_READ_INPUT_REGISTER,S_REG_INPUT_START);
+ /*   printf("REG:%d add:%d|",MB_FUNC_READ_INPUT_REGISTER,S_REG_INPUT_START);
     for(int i=0;i<S_REG_INPUT_NREGS;i++)
         printf("%d",slave.usSRegInBuf[i]);
-    printf(" REG HOLD: func:%d  add:%d",MB_FUNC_READ_HOLDING_REGISTER,S_REG_HOLDING_START);
+    printf("REG:%d func:%d  add:%d|",MB_FUNC_READ_HOLDING_REGISTER,S_REG_HOLDING_START);
     for(int i=0;i<S_REG_HOLDING_NREGS;i++)
         printf("%d",slave.usSRegHoldBuf[i]);
-    printf("\n\r");
+    printf("\n\r");*/
 
   }
 
