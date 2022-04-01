@@ -126,23 +126,25 @@ int main() {
   while (true) {
     for (int i = 0; i < NB_IN; i++) {
       tab_in[i] = tab_uc_in[i].read();
-     // printf("%d ", tab_in[i]);
+     // printf("%d ", tab_in[i]); //visues des entrées
     }
     printf("\n\r");
+    //toggle des sorties
     for (int i = 0; i < 4; i++) {
-      tab_out[i].write(!tab_out[i].read());
+      tab_out[i].write(!tab_out[i].read()); 
     }
     // ca fait du bruit
     // cmd_24V = !cmd_24V;
     // eject = !eject;
     // up = !up;
-    // grove_I2C.write(0x70);
+    
+    //send data vers UART pour le test
     char buf[20];
     int cpt = 0;
     sprintf(buf, "test %d\n\r", cpt);
     grove_serial.write(buf, sizeof(buf));
 
-    led1 = !led1;
+// le modbus il est beau on allume tout ou on éteind tout sur le max 7219 chinois
     if(slave.ucSCoilBuf[0]==1)
         max_7219.set_display_test();
     else
