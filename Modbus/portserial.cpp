@@ -101,6 +101,7 @@ vMBPortSerialEnable( BOOL xRxEnable, BOOL xTxEnable )
 BOOL
 xMBPortSerialInit( UCHAR ucPORT, ULONG ulBaudRate, UCHAR ucDataBits, eMBParity eParity )
 {
+    modbus_dir=INPUT;
     modbus_serial.baud(ulBaudRate);
     modbus_serial.format(8,(SerialBase::Parity) eParity,1);
     us_time_to_send_bit=1000000/(ulBaudRate);

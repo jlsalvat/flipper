@@ -87,10 +87,10 @@ int main() {
                                  .decode_mode = 0,
                                  .intensity = Max7219::MAX7219_INTENSITY_8,
                                  .scan_limit = Max7219::MAX7219_SCAN_8};
-// on lance l'init Modbus en mode RTU, adresse slave 1, 115200 baud, parité paire
+// on lance l'init Modbus en mode RTU, adresse slave 1, 9600 baud, pas de parité
  printf("modbus slave ID-%d(0x%x) for the device.\r\n", SLAVE_ID, SLAVE_ID ); 
-    /* Enable the Modbus Protocol Stack. */
-    if ( (eStatus = eMBInit( MB_RTU, SLAVE_ID, 0, 600, MB_PAR_NONE )) !=  MB_ENOERR ){
+    /* Enable the Modbus Protocol Stack.  ca ne marche pas avec les parités ???*/
+    if ( (eStatus = eMBInit( MB_RTU, SLAVE_ID, 0, 9200, MB_PAR_NONE )) !=  MB_ENOERR ){
         eMBClose();  
         printf("ERROR modbus : eMBClose()\n\r")  ; 
     }
