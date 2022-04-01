@@ -90,7 +90,7 @@ int main() {
 // on lance l'init Modbus en mode RTU, adresse slave 1, 9600 baud, pas de parité
  printf("modbus slave ID-%d(0x%x) for the device.\r\n", SLAVE_ID, SLAVE_ID ); 
     /* Enable the Modbus Protocol Stack.  ca ne marche pas avec les parités ???*/
-    if ( (eStatus = eMBInit( MB_RTU, SLAVE_ID, 0, 9200, MB_PAR_NONE )) !=  MB_ENOERR ){
+    if ( (eStatus = eMBInit( MB_RTU, SLAVE_ID, 0, 9600, MB_PAR_NONE )) !=  MB_ENOERR ){
         eMBClose();  
         printf("ERROR modbus : eMBClose()\n\r")  ; 
     }
