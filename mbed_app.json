@@ -4,8 +4,11 @@
       "*": {
         "target.c_lib": "small",
         "target.printf_lib": "minimal-printf",
-        "platform.minimal-printf-enable-floating-point": false,
-        "platform.stdio-minimal-console-only": true
+        "platform.minimal-printf-enable-floating-point": true,
+        "platform.stdio-minimal-console-only": true,
+        "platform.stdio-buffered-serial": 1,
+        "platform.stdio-baud-rate": 115200
       }
     }
+
 }

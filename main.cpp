@@ -11,6 +11,7 @@
 #include "mbport.h"
 #include "mb_app.h"
 #include "mbproto.h"
+#include <stdio.h>
 
 #define WAIT_TIME_MS 2000
 const int NB_IN = 20;
@@ -63,11 +64,12 @@ Max7219 max_7219(D11, D12, D13, D10);
 Grove_LCD_RGB_Backlight lcd(PTC2, PTC1);
 Ticker tick_modbus;
 
+// attention printf à 115200
+//cf https://forums.mbed.com/t/hitchhikers-guide-to-printf-in-mbed-6/12492
+
 const int colorR = 255;
 const int colorG = 0;
 const int colorB = 0;
-
-
 
 void ISR_poll_modbus(){
          //launch modbus poll
@@ -79,6 +81,7 @@ void ISR_poll_modbus(){
 
 int main() {
   bool tab_in[NB_IN];
+  char buff[64];
 
   max7219_configuration_t cfg = {.device_number = 1,
                                  .decode_mode = 0,
@@ -87,7 +90,7 @@ int main() {
 // on lance l'init Modbus en mode RTU, adresse slave 1, 115200 baud, parité paire
  printf("modbus slave ID-%d(0x%x) for the device.\r\n", SLAVE_ID, SLAVE_ID ); 
     /* Enable the Modbus Protocol Stack. */
-    if ( (eStatus = eMBInit( MB_RTU, SLAVE_ID, 0, 600, MB_PAR_NONE )) !=  MB_ENOERR ){
+    if ( (eStatus = eMBInit( MB_RTU, SLAVE_ID, 0, 9600, MB_PAR_NONE )) !=  MB_ENOERR ){
         eMBClose();  
         printf("ERROR modbus : eMBClose()\n\r")  ; 
     }
@@ -96,7 +99,7 @@ int main() {
     }
     else{
         printf("MODBUS OK : polling...\n\r")  ; 
-        tick_modbus.attach(ISR_poll_modbus,5ms);
+        tick_modbus.attach(ISR_poll_modbus,1ms);
     }
  
   max_7219.init_device(cfg);
@@ -147,12 +150,12 @@ int main() {
     thread_sleep_for(WAIT_TIME_MS);
 // print modbus
     printf("eStatus=%d \n\r",eStatus);
-    printf("DISCRETE:%d add reg:%d|",MB_FUNC_READ_DISCRETE_INPUTS,S_DISCRETE_INPUT_START);
-    for(int i=0;i<S_DISCRETE_INPUT_NDISCRETES/8;i++)
-        printf("%2x ",slave.ucSDiscInBuf[i]);
     printf(" COIL:%d add reg:%d|",MB_FUNC_READ_COILS,S_COIL_START);
     for(int i=0;i<S_COIL_NCOILS/8;i++)
         printf("%2x ",slave.ucSCoilBuf[i]);
+    printf("DISCRETE:%d add reg:%d|",MB_FUNC_READ_DISCRETE_INPUTS,S_DISCRETE_INPUT_START);
+    for(int i=0;i<S_DISCRETE_INPUT_NDISCRETES/8;i++)
+        printf("%2x ",slave.ucSDiscInBuf[i]);
     printf("\n\r");
  /*   printf("REG:%d add:%d|",MB_FUNC_READ_INPUT_REGISTER,S_REG_INPUT_START);
     for(int i=0;i<S_REG_INPUT_NREGS;i++)
