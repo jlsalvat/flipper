@@ -316,10 +316,9 @@ eMBPoll( void ) {
                 eStatus = peMBFrameReceiveCur( &ucRcvAddress, &ucMBFrame, &usLength );
                 //printf("[EV_FRAME_RECEIVED] usLength=%d \r\n", usLength );
                 if ( eStatus == MB_ENOERR ) {
-                    #if 0
+                    #ifdef DEBUG_MB
                     if ( ucMBFrame )
                     {
-                         printf( "\r\n" );                         
                          printf( "-->" );
                          for ( int i=0; i< usLength; i++ )
                             printf("%02x ", ucMBFrame[i]);
@@ -359,7 +358,8 @@ eMBPoll( void ) {
                         ucMBFrame[usLength++] = eException;
                     }
                     eStatus = peMBFrameSendCur( ucMBAddress, ucMBFrame, usLength );
-                    #if 0
+                    #ifdef DEBUG_MB
+                    #warning DEBUG_MB ENABLED in mbed_app.json : printf of modbus data
                     if ( ucMBFrame )
                     {
                         printf( "\r\n" );                                                 
@@ -367,7 +367,9 @@ eMBPoll( void ) {
                         for ( int i=0; i< usLength; i++ )
                             printf("%02x ", ucMBFrame[i]);
                         printf( "\r\n" );
-                    #endif
+                   
+                     }
+                      #endif
                 }
                 break;
 
