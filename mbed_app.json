@@ -1,4 +1,7 @@
 {
+            "macros": [
+                "DEBUG_MB"
+         ],
     "requires": ["bare-metal"],
     "target_overrides": {
       "*": {
@@ -8,7 +11,9 @@
         "platform.stdio-minimal-console-only": true,
         "platform.stdio-buffered-serial": 1,
         "platform.stdio-baud-rate": 115200
+
       }
     }
 
 }
+
