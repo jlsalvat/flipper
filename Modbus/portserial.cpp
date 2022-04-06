@@ -126,7 +126,9 @@ xMBPortSerialPutByte( CHAR ucByte )
     /* Put a byte in the UARTs transmit buffer. This function is called
      * by the protocol stack if pxMBFrameCBTransmitterEmpty( ) has been
      * called. */
+    #ifdef DEBUG_SERIAL
     printf("[%02x]", ucByte );
+    #endif
     modbus_dir=OUTPUT;
     modbus_serial.write( &ucByte,1);
     wait_us(us_time_to_send_bit*11);//maximum 11 bits to send
@@ -142,7 +144,9 @@ xMBPortSerialGetByte( CHAR * pucByte )
      */
      modbus_dir=INPUT;
     modbus_serial.read(pucByte,1);
+    #ifdef DEBUG_SERIAL
     printf("<%02x>", *pucByte );
+    #endif
     return TRUE;
 }
 
